@@ -129,35 +129,34 @@ public class ShapeEditor : Editor {
     void HandleInput(Event guiEvent)
     {
 		Ray mouseRay = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition);
-		float drawPlaneHeight = 0;
-		float dstToDrawPlane = (drawPlaneHeight - mouseRay.origin.y) / mouseRay.direction.y;
-		Vector3 mousePosition = mouseRay.GetPoint(dstToDrawPlane);
+        if(Physics.Raycast(mouseRay, out RaycastHit hit)) {
+            Vector3 mousePosition = hit.point;
 
-        if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.Shift)
-		{
-            HandleShiftLeftMouseDown(mousePosition);
-		}
+            if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.Shift)
+            {
+                HandleShiftLeftMouseDown(mousePosition);
+            }
 
-        if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.None)
-		{
-            HandleLeftMouseDown(mousePosition);
-		}
+            if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.None)
+            {
+                HandleLeftMouseDown(mousePosition);
+            }
 
-        if (guiEvent.type == EventType.MouseUp && guiEvent.button == 0)
-        {
-            HandleLeftMouseUp(mousePosition);
+            if (guiEvent.type == EventType.MouseUp && guiEvent.button == 0)
+            {
+                HandleLeftMouseUp(mousePosition);
+            }
+
+            if (guiEvent.type == EventType.MouseDrag && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.None)
+            {
+                HandleLeftMouseDrag(mousePosition);
+            }
+
+            if (!selectionInfo.pointIsSelected)
+            {
+                UpdateMouseOverInfo(mousePosition);
+            }
         }
-
-        if (guiEvent.type == EventType.MouseDrag && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.None)
-        {
-            HandleLeftMouseDrag(mousePosition);
-        }
-
-        if (!selectionInfo.pointIsSelected)
-        {
-            UpdateMouseOverInfo(mousePosition);
-        }
-
 	}
 
     void HandleShiftLeftMouseDown(Vector3 mousePosition)
@@ -315,11 +314,6 @@ public class ShapeEditor : Editor {
                 }
                 Handles.DrawSolidDisc(shapeToDraw.points[i], Vector3.up, shapeCreator.handleRadius);
             }
-        }
-
-        if (shapeChangedSinceLastRepaint)
-        {
-            shapeCreator.UpdateMeshDisplay();
         }
 
         shapeChangedSinceLastRepaint = false;

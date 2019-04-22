@@ -14,10 +14,4 @@ public class ShapeCreator : MonoBehaviour
     public bool showShapesList;
 
     public float handleRadius = .5f;
-
-    public void UpdateMeshDisplay()
-    {
-        CompositeShape compShape = new CompositeShape(shapes);
-        meshFilter.mesh = compShape.GetMesh();
-    }
 }
