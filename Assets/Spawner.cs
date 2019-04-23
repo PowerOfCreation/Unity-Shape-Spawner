@@ -56,7 +56,6 @@ public class Spawner : MonoBehaviour
         }
     }
 
-
     public static bool IsInPolygon(List<Vector3> polygon, Vector3 testPoint)
     {
         bool result = false;
