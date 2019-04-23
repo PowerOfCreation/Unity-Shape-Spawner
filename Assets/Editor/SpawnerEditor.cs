@@ -17,6 +17,7 @@ public class SpawnerEditor : Editor
         DrawDefaultInspector();
 
         if(GUILayout.Button("Spawn")) {
+            spawner.DeleteAllChilds();
             spawner.Spawn(spawner.prefabToSpawn, spawner.shapeCreator.shapes[0]);
         }
     }

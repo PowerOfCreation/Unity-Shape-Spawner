@@ -48,6 +48,15 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    public void DeleteAllChilds() {
+        Transform[] childs = GetComponentsInChildren<Transform>();
+
+        for(int i = 1; i < childs.Length; i++) {
+            DestroyImmediate(childs[i].gameObject);
+        }
+    }
+
+
     public static bool IsInPolygon(List<Vector3> polygon, Vector3 testPoint)
     {
         bool result = false;
