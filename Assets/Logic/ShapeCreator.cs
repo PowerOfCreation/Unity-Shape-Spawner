@@ -6,6 +6,7 @@ using Sebastian.Geometry;
 public class ShapeCreator : MonoBehaviour
 {
     public MeshFilter meshFilter;
+    public Creature creature;
 
     [HideInInspector]
     public List<Shape> shapes = new List<Shape>();
@@ -14,4 +15,8 @@ public class ShapeCreator : MonoBehaviour
     public bool showShapesList;
 
     public float handleRadius = .5f;
+
+    public void Awake() {
+        SpawnManager.Instance.RegisterSpawnZone(creature, shapes[0]);
+    }
 }

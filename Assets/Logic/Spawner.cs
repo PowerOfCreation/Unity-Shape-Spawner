@@ -6,9 +6,29 @@ public class Spawner : MonoBehaviour
 {
     public ShapeCreator shapeCreator;
     public GameObject prefabToSpawn;
+    public Creature creature;
 
-    public void Spawn(GameObject gameObject, Shape shape)
+    public void Start() {
+        Spawn(prefabToSpawn);
+    }
+
+    public void Spawn(GameObject gameObject)
     {
+        Vector3 bestSpawnPosition = SpawnManager.Instance.GetBestSpawnPosition(creature);
+        GameObject.Instantiate(prefabToSpawn, bestSpawnPosition, Quaternion.identity, transform);
+    }
+
+    public void SpawnAll(GameObject gameObject, Shape shape)
+    {
+        List<Vector3> possibleSpawnPoints = GetPossibleSpawnPoints(shape);
+
+        for(int i = 0; i < possibleSpawnPoints.Count; i++) {
+            GameObject.Instantiate(prefabToSpawn, possibleSpawnPoints[i], Quaternion.identity, transform);
+        }
+    }
+
+    public static List<Vector3> GetPossibleSpawnPoints(Shape shape) {
+        List<Vector3> result = new List<Vector3>();
         float minX = shape.points[0].x, maxX = shape.points[0].x;
         float minY = shape.points[0].z, maxY = shape.points[0].z;
 
@@ -42,13 +62,15 @@ public class Spawner : MonoBehaviour
                 Vector3 currentPosition = new Vector3(x, GetHeight(x, y), y);
                 if(IsInPolygon(shape.points, currentPosition))
                 {
-                    GameObject.Instantiate(prefabToSpawn, currentPosition, Quaternion.identity, transform);
+                    result.Add(currentPosition);
                 }
             }
         }
+
+        return result;
     }
 
-    public float GetHeight(int x, int y) {
+    public static float GetHeight(int x, int y) {
         if(Physics.Raycast(new Vector3(x, 0f, y), Vector3.down, out RaycastHit hit)) {
             return hit.point.y;
         }
@@ -62,8 +84,8 @@ public class Spawner : MonoBehaviour
         return .5f;
     }
 
-    public void DeleteAllChilds() {
-        Transform[] childs = GetComponentsInChildren<Transform>();
+    public static void DeleteAllChilds(Transform transform) {
+        Transform[] childs = transform.GetComponentsInChildren<Transform>();
 
         for(int i = 1; i < childs.Length; i++) {
             DestroyImmediate(childs[i].gameObject);
