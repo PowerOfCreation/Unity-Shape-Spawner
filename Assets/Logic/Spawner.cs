@@ -66,18 +66,20 @@ public class Spawner : MonoBehaviour
 
         }
 
-        List<Vector3> result = new List<Vector3>((Mathf.CeilToInt(minX) / 2) * (Mathf.CeilToInt(minY) / 2));
+        List<Vector3> result = new List<Vector3>((((int) maxX - Mathf.CeilToInt(minX)) / 2) * (((int) maxY - Mathf.CeilToInt(minY)) / 2));
 
         for(int x = Mathf.CeilToInt(minX); x < maxX; x += 2)
         {
             for(int y = Mathf.CeilToInt(minY); y < maxY; y += 2)
             {
-                Vector3 currentPosition;
-                currentPosition = new Vector3(x, GetHeightRough(x, y), y);
+                Vector3 currentPosition = new Vector3(x, GetHeightRough(x, y), y);
 
                 if(IsInPolygon(shape.points, currentPosition))
                 {
                     result.Add(currentPosition);
+                }
+                else {
+                    y += 10;
                 }
             }
         }
