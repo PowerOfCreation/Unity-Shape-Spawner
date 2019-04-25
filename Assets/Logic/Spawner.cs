@@ -8,22 +8,26 @@ public class Spawner : MonoBehaviour
     public GameObject prefabToSpawn;
     public Creature creature;
 
-    [Range(0, 50)]
+    [Range(0, 200)]
     public short creatureAmountToSpawn = 10;
 
     public void Update() {
         if(Input.GetButtonDown("Jump")) {
-            StartCoroutine(SpawnCreature(creatureAmountToSpawn));
+          //  StartCoroutine(SpawnCreature(creatureAmountToSpawn));
+          SpawnCreature(creatureAmountToSpawn);
         }
     }
 
-    public IEnumerator SpawnCreature(int amount) {
+    public void SpawnCreature(int amount) {
         SpawnManager.Instance.DeleteAllChilds(SpawnManager.Instance.transform);
 
+        var watch = System.Diagnostics.Stopwatch.StartNew();
         for(int i = 0; i < amount; i++) {
             SpawnManager.Instance.Spawn(creature);
-            yield return new WaitForSeconds(.2f);
         }
+        watch.Stop();
+        var elapsedMs = watch.ElapsedMilliseconds;
+        Debug.Log(elapsedMs);
     }
 
     public void SpawnAll(GameObject gameObject, Shape shape)
@@ -36,11 +40,10 @@ public class Spawner : MonoBehaviour
     }
 
     public static List<Vector3> GetPossibleSpawnPoints(Shape shape) {
-        List<Vector3> result = new List<Vector3>();
         float minX = shape.points[0].x, maxX = shape.points[0].x;
         float minY = shape.points[0].z, maxY = shape.points[0].z;
 
-        for(int i = 0; i < shape.points.Count; i++)
+        for(int i = 1; i < shape.points.Count; i++)
         {
             Vector3 point = shape.points[i];
 
@@ -63,11 +66,15 @@ public class Spawner : MonoBehaviour
 
         }
 
-        for(int x = Mathf.CeilToInt(minX); x < maxX; x++)
+        List<Vector3> result = new List<Vector3>((Mathf.CeilToInt(minX) / 2) * (Mathf.CeilToInt(minY) / 2));
+
+        for(int x = Mathf.CeilToInt(minX); x < maxX; x += 2)
         {
-            for(int y = Mathf.CeilToInt(minY); y < maxY; y++)
+            for(int y = Mathf.CeilToInt(minY); y < maxY; y += 2)
             {
-                Vector3 currentPosition = new Vector3(x, GetHeight(x, y), y);
+                Vector3 currentPosition;
+                currentPosition = new Vector3(x, GetHeightRough(x, y), y);
+
                 if(IsInPolygon(shape.points, currentPosition))
                 {
                     result.Add(currentPosition);
@@ -76,6 +83,10 @@ public class Spawner : MonoBehaviour
         }
 
         return result;
+    }
+
+    public static float GetHeightRough(int x, int y) {
+        return Terrain.activeTerrain.terrainData.GetHeight(x, y);
     }
 
     public static float GetHeight(int x, int y) {

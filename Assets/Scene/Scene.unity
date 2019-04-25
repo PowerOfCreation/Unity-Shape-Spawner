@@ -154,6 +154,11 @@ MonoBehaviour:
     - {x: 95.64177, y: 9.191387, z: 46.797424}
     - {x: 120.60813, y: 12.436432, z: 39.18905}
     - {x: 124.96125, y: 22.74686, z: 55.230938}
+  - points:
+    - {x: 142.92032, y: 47.84993, z: 75.85967}
+    - {x: 133.44414, y: 8.477114, z: 23.994316}
+    - {x: 197.91394, y: 15.590197, z: 27.943424}
+    - {x: 238.74724, y: 59.310646, z: 81.58963}
   showShapesList: 1
   handleRadius: 0.5
 --- !u!4 &344253690
@@ -186,7 +191,7 @@ MonoBehaviour:
   prefabToSpawn: {fileID: 6978519100461874365, guid: b47ef21dd8cf6ab458e23d91ff90489c,
     type: 3}
   creature: {fileID: 11400000, guid: 6d5e3debb6c9afd4593931caf24fec31, type: 2}
-  creatureAmountToSpawn: 30
+  creatureAmountToSpawn: 200
 --- !u!1 &429069271
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,6 +399,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   creatureSpawnZones: []
+  minDistanceBetweenEntities: 10
 --- !u!4 &609321351
 Transform:
   m_ObjectHideFlags: 0
@@ -675,7 +681,7 @@ Light:
   serializedVersion: 8
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.2
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10

@@ -1,18 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class SpawnManager : Singleton<SpawnManager>
 {
     public List<CreatureSpawnZones> creatureSpawnZones = new List<CreatureSpawnZones>();
     public Dictionary<Creature, List<Entity>> allSpawnedEntities = new Dictionary<Creature, List<Entity>>();
     
+    public float minDistanceBetweenEntities = 10f;
 
     public void Spawn(Creature creature)
     {
-        Vector3? bestSpawnPosition = SpawnManager.Instance.GetBestSpawnPosition(creature);
-        if(bestSpawnPosition == null) { return; }
-        Entity entity = GameObject.Instantiate(creature.prefab, (Vector3) bestSpawnPosition, Quaternion.identity, transform).GetComponent<Entity>();
+        Vector3 bestSpawnPosition = SpawnManager.Instance.GetBestSpawnPosition(creature);
+        Entity entity = GameObject.Instantiate(creature.prefab, new Vector3(bestSpawnPosition.x, Spawner.GetHeight((int) bestSpawnPosition.x, (int) bestSpawnPosition.z), bestSpawnPosition.z), Quaternion.identity, transform).GetComponent<Entity>();
         entity.creature = creature;
 
         if(allSpawnedEntities.ContainsKey(creature)) {
@@ -34,48 +35,50 @@ public class SpawnManager : Singleton<SpawnManager>
         creatureSpawnZones.Add(new CreatureSpawnZones(creature, shape));
     }
 
-    public Vector3? GetBestSpawnPosition(Creature creature) {
+    public Vector3 GetBestSpawnPosition(Creature creature) {
         List<Entity> entities = (allSpawnedEntities.ContainsKey(creature))?allSpawnedEntities[creature]:new List<Entity>();
         List<Vector3> bestSpawnPositions = new List<Vector3>();
-        float bestSpawnMetric = 0f;
+        float bestSpawnMetric = float.MinValue;
         float spawnMetric = 0f;
 
         for(int i = 0; i < creatureSpawnZones.Count; i++) {
             if(creatureSpawnZones[i].creature == creature) {
-                List<Vector3> possibleSpawnPoints = new List<Vector3>();
-
                 for(int j = 0; j < creatureSpawnZones[i].spawnZones.Count; j++) {
-                    possibleSpawnPoints.AddRange(Spawner.GetPossibleSpawnPoints(creatureSpawnZones[i].spawnZones[j]));
-                }
+                    List<Vector3> possibleSpawnPoints = Spawner.GetPossibleSpawnPoints(creatureSpawnZones[i].spawnZones[j]);
 
-                for(int j = 0; j < possibleSpawnPoints.Count; j++) {
-                    spawnMetric = 0;
-
-                    for(int e = 0; e < entities.Count; e++) {
-                        float distanceEntityPoint = Vector3.Distance(possibleSpawnPoints[j], entities[e].transform.position);
-                        spawnMetric += Mathf.Pow(distanceEntityPoint * (Random.Range(90, 111) / 100f), 2f);
-                        spawnMetric -= Mathf.Pow(distanceEntityPoint / 10f, -24f);
-                    }
-
-                    if(spawnMetric > bestSpawnMetric) {
-                        bestSpawnMetric = spawnMetric;
-                        bestSpawnPositions.Clear();
-                        bestSpawnPositions.Add(possibleSpawnPoints[j]);
-                    }
-                    else if(spawnMetric == bestSpawnMetric) {
-                        bestSpawnPositions.Add(possibleSpawnPoints[j]);
+                    for(int k = 0; k < possibleSpawnPoints.Count; k++) {
+                        spawnMetric = CalculateSpawnMetric(possibleSpawnPoints[k], entities);
+                        if(spawnMetric > bestSpawnMetric) {
+                            bestSpawnMetric = spawnMetric;
+                            bestSpawnPositions.Clear();
+                            bestSpawnPositions.Add(possibleSpawnPoints[k]);
+                        }
+                        else if(spawnMetric == bestSpawnMetric) {
+                            bestSpawnPositions.Add(possibleSpawnPoints[k]);
+                        }
+                        else {
+                            k += 20;
+                        }
                     }
                 }
 
                 break;
             }
         }
-        
-        if(bestSpawnPositions.Count > 0) {
-            return bestSpawnPositions.Shuffle()[0];
+
+        return bestSpawnPositions[Random.Range(0, bestSpawnPositions.Count)];
+    }
+
+    public float CalculateSpawnMetric(Vector3 point, List<Entity> entities) {
+        float spawnMetric = 0f;
+
+        for(int e = 0; e < entities.Count; e++) {
+            float distanceEntityPoint = Vector3.Distance(point, entities[e].transform.position);
+            spawnMetric -= Mathf.Pow(distanceEntityPoint / 50f, -8f);
+            spawnMetric += (distanceEntityPoint * (Random.Range(80, 120) / 100f));
         }
 
-        return null;
+        return spawnMetric;
     }
 
     public void DeleteAllChilds(Transform transform) {
