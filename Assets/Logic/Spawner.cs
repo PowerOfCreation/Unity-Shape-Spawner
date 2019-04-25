@@ -8,14 +8,22 @@ public class Spawner : MonoBehaviour
     public GameObject prefabToSpawn;
     public Creature creature;
 
-    public void Start() {
-        Spawn(prefabToSpawn);
+    [Range(0, 50)]
+    public short creatureAmountToSpawn = 10;
+
+    public void Update() {
+        if(Input.GetButtonDown("Jump")) {
+            StartCoroutine(SpawnCreature(creatureAmountToSpawn));
+        }
     }
 
-    public void Spawn(GameObject gameObject)
-    {
-        Vector3 bestSpawnPosition = SpawnManager.Instance.GetBestSpawnPosition(creature);
-        GameObject.Instantiate(prefabToSpawn, bestSpawnPosition, Quaternion.identity, transform);
+    public IEnumerator SpawnCreature(int amount) {
+        SpawnManager.Instance.DeleteAllChilds(SpawnManager.Instance.transform);
+
+        for(int i = 0; i < amount; i++) {
+            SpawnManager.Instance.Spawn(creature);
+            yield return new WaitForSeconds(.2f);
+        }
     }
 
     public void SpawnAll(GameObject gameObject, Shape shape)
@@ -82,14 +90,6 @@ public class Spawner : MonoBehaviour
         Physics.queriesHitBackfaces = false;
 
         return .5f;
-    }
-
-    public static void DeleteAllChilds(Transform transform) {
-        Transform[] childs = transform.GetComponentsInChildren<Transform>();
-
-        for(int i = 1; i < childs.Length; i++) {
-            DestroyImmediate(childs[i].gameObject);
-        }
     }
 
     public static bool IsInPolygon(List<Vector3> polygon, Vector3 testPoint)

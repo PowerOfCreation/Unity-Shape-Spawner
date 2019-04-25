@@ -17,6 +17,8 @@ public class ShapeCreator : MonoBehaviour
     public float handleRadius = .5f;
 
     public void Awake() {
-        SpawnManager.Instance.RegisterSpawnZone(creature, shapes[0]);
+        for(int i = 0; i < shapes.Count; i++) {
+            SpawnManager.Instance.RegisterSpawnZone(creature, shapes[i]);
+        }
     }
 }

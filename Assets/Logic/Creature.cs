@@ -7,4 +7,5 @@ using System;
 public class Creature : ScriptableObject
 {
     public string creatureName;
+    public GameObject prefab;
 }

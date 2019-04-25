@@ -17,11 +17,11 @@ public class SpawnerEditor : Editor
         DrawDefaultInspector();
 
         if(GUILayout.Button("Spawn")) {
-            Spawner.DeleteAllChilds(spawner.transform);
+            SpawnManager.Instance.DeleteAllChilds(spawner.transform);
             spawner.SpawnAll(spawner.prefabToSpawn, spawner.shapeCreator.shapes[0]);
         }
         else if(GUILayout.Button("Clear")) {
-            Spawner.DeleteAllChilds(spawner.transform);
+            SpawnManager.Instance.DeleteAllChilds(spawner.transform);
         }
     }
 }

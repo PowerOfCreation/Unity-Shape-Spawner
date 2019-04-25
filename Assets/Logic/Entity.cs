@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    // Dummy
+    public Creature creature;
 }
