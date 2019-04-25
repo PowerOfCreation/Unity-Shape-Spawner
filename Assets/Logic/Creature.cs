@@ -6,5 +6,5 @@ using System;
 [CreateAssetMenu(fileName = "Creature", menuName = "Combat/Creature", order = 1)]
 public class Creature : ScriptableObject
 {
-    public string creauteName;
+    public string creatureName;
 }
