@@ -91,10 +91,7 @@ namespace Sebastian.Geometry
                 bool vertexIsConvex = IsConvex(polygon.points[prevPointIndex], polygon.points[i], polygon.points[nextPointIndex]);
                 Vertex currentHullVertex = new Vertex(polygon.points[i], i, vertexIsConvex);
 
-                if (currentNode == null)
-                    currentNode = vertexList.AddFirst(currentHullVertex);
-                else
-                    currentNode = vertexList.AddAfter(currentNode, currentHullVertex);
+                currentNode = (currentNode == null)?vertexList.AddFirst(currentHullVertex):vertexList.AddAfter(currentNode, currentHullVertex);
             }
 
             // Process holes:

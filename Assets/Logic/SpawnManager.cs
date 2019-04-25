@@ -19,15 +19,7 @@ public class SpawnManager : Singleton<SpawnManager>
     }
 
     public Vector3 GetBestSpawnPosition(Creature creature) {
-        List<Entity> entities;
-
-        if(allSpawnedEntities.ContainsKey(creature)) {
-            entities = allSpawnedEntities[creature];
-        }
-        else {
-            entities = new List<Entity>();
-        }
-        
+        List<Entity> entities = (allSpawnedEntities.ContainsKey(creature))?allSpawnedEntities[creature]:new List<Entity>();
         List<Vector3> bestSpawnPositions = new List<Vector3>();
         float bestSpawnMetric = 0f;
         float spawnMetric = 0f;
