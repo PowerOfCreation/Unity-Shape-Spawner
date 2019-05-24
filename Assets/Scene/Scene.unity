@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -143,24 +143,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshFilter: {fileID: 429069273}
-  creature: {fileID: 11400000, guid: 6d5e3debb6c9afd4593931caf24fec31, type: 2}
+  creature: {fileID: 0}
   shapes:
   - points:
-    - {x: 62.905243, y: 10.432723, z: 72.62863}
-    - {x: 80.591896, y: 9.426556, z: 57.340458}
-    - {x: 90.452065, y: 35.14255, z: 89.99966}
-  - points:
-    - {x: 100.5183, y: 19.194529, z: 64.58715}
-    - {x: 95.64177, y: 9.191387, z: 46.797424}
-    - {x: 120.60813, y: 12.436432, z: 39.18905}
-    - {x: 124.96125, y: 22.74686, z: 55.230938}
-  - points:
-    - {x: 142.92032, y: 47.84993, z: 75.85967}
-    - {x: 133.44414, y: 8.477114, z: 23.994316}
-    - {x: 197.91394, y: 15.590197, z: 27.943424}
-    - {x: 359.85022, y: 9.434395, z: 36.993095}
-    - {x: 300.449, y: 37.476715, z: 69.41756}
-    - {x: 238.74724, y: 59.310646, z: 81.58963}
+    - {x: 27.860407, y: 0.1281805, z: 30.974987}
+    - {x: 21.28168, y: 0, z: 19.540333}
+    - {x: 36.82594, y: 0, z: 10.854749}
+    - {x: 51.847477, y: 0.25636482, z: 19.964783}
+    - {x: 40.855232, y: 0.9564705, z: 39.808132}
   showShapesList: 1
   handleRadius: 0.5
 --- !u!4 &344253690
@@ -193,7 +183,7 @@ MonoBehaviour:
   prefabToSpawn: {fileID: 6978519100461874365, guid: b47ef21dd8cf6ab458e23d91ff90489c,
     type: 3}
   creature: {fileID: 11400000, guid: 6d5e3debb6c9afd4593931caf24fec31, type: 2}
-  creatureAmountToSpawn: 200
+  creatureAmountToSpawn: 100
 --- !u!1 &429069271
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,51 +360,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &609321349
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 609321351}
-  - component: {fileID: 609321350}
-  m_Layer: 0
-  m_Name: SpawnManager (Singleton)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &609321350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 609321349}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22fe11432054a8b4dbc6a45579e0b54b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  creatureSpawnZones: []
-  minDistanceBetweenEntities: 10
---- !u!4 &609321351
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 609321349}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &756828873
 GameObject:
@@ -655,6 +600,51 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1044101501
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1044101503}
+  - component: {fileID: 1044101502}
+  m_Layer: 0
+  m_Name: SpawnManager (Singleton)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1044101502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1044101501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22fe11432054a8b4dbc6a45579e0b54b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  creatureSpawnZones: []
+  minDistanceBetweenEntities: 10
+--- !u!4 &1044101503
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1044101501}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1092492911
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,7 +673,7 @@ Light:
   serializedVersion: 8
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 0.2
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10

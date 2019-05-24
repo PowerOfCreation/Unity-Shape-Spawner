@@ -84,8 +84,8 @@ public class SpawnManager : Singleton<SpawnManager>
         Transform[] childs = transform.GetComponentsInChildren<Transform>();
         
         for(int i = 1; i < childs.Length; i++) {
-            Entity entity = childs[i].GetComponent<Entity>();
-            allSpawnedEntities[entity.creature].Remove(entity);
+       //     Entity entity = childs[i].GetComponent<Entity>();
+      //      allSpawnedEntities[entity.creature].Remove(entity);
             DestroyImmediate(childs[i].gameObject);
         }
     }

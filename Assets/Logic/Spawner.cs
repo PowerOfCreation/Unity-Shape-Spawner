@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sebastian.Geometry;
+using System.Linq;
 
 public class Spawner : MonoBehaviour
 {
@@ -8,6 +10,10 @@ public class Spawner : MonoBehaviour
     public GameObject prefabToSpawn;
     public Creature creature;
 
+    public List<Vector2> polygonPoints;
+    public List<int> polygonTriangles;
+    float[] areas;
+    float totalArea = 0f;
     [Range(0, 200)]
     public short creatureAmountToSpawn = 10;
 
@@ -18,24 +24,71 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    public void SpawnCreature(int amount) {
-        SpawnManager.Instance.DeleteAllChilds(SpawnManager.Instance.transform);
+    public void Start() {
+        FillTrianglesField(shapeCreator.shapes);
+        FillAreaField();
+    }
 
+    public void SpawnCreature(int amount) {
+        SpawnManager.Instance.DeleteAllChilds(transform);
         var watch = System.Diagnostics.Stopwatch.StartNew();
+
         for(int i = 0; i < amount; i++) {
-            SpawnManager.Instance.Spawn(creature);
+           SpawnAll(creature.prefab);
         }
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;
         Debug.Log(elapsedMs);
     }
 
-    public void SpawnAll(GameObject gameObject, Shape shape)
-    {
-        List<Vector3> possibleSpawnPoints = GetPossibleSpawnPoints(shape);
+    public void FillTrianglesField(List<Shape> shapes) {
+        Vector2[][] holes = new Vector2[0][];
+        for(int i = 0; i < shapes.Count; i++) {
+            int oldPolygonPointsCount = polygonPoints.Count;
+            Vector2[] currentPolygonPoints = shapes[i].points.ConvertAll<Vector2>(x => new Vector2(x.x, x.z)).ToArray();
+            Triangulator triangulator = new Triangulator(new Polygon(currentPolygonPoints, holes));
+            List<int> currentTriangles = triangulator.Triangulate().ToList();
+            for(int j = 0; j < currentTriangles.Count; j++) {
+                currentTriangles[j] += oldPolygonPointsCount;
+            }
+            polygonTriangles.AddRange(currentTriangles);
+            polygonPoints.AddRange(currentPolygonPoints);
+        }
 
-        for(int i = 0; i < possibleSpawnPoints.Count; i++) {
-            GameObject.Instantiate(prefabToSpawn, possibleSpawnPoints[i], Quaternion.identity, transform);
+        areas = new float[polygonTriangles.Count / 3];
+    }
+
+    public void FillAreaField() {
+        for(int i = 0, k = 0; i < polygonTriangles.Count; i += 3, k++) {
+            float a = Vector2.Distance(polygonPoints[polygonTriangles[i]], polygonPoints[polygonTriangles[i + 1]]);
+            float b = Vector2.Distance(polygonPoints[polygonTriangles[i]], polygonPoints[polygonTriangles[i + 2]]);
+            float c = Vector2.Distance(polygonPoints[polygonTriangles[i + 1]], polygonPoints[polygonTriangles[i + 2]]);
+            float s = (a + b + c) / 2f;
+
+            areas[k] = Mathf.Sqrt(s * (s - a) * (s - b) * (s - c));
+            totalArea += areas[k];
+        }
+    }
+
+    public void SpawnAll(GameObject gameObject)
+    {
+        float pickedArea = (Random.value * totalArea);
+        float currentArea = 0f;
+
+        for(int i = 0; i < areas.Length; i++) {
+            currentArea += areas[i];
+            if(currentArea >= pickedArea) {
+                Vector2 ab = polygonPoints[polygonTriangles[(i * 3) + 1]] - polygonPoints[polygonTriangles[i * 3]];
+                Vector2 ac = polygonPoints[polygonTriangles[(i * 3) + 2]] - polygonPoints[polygonTriangles[i * 3]];
+
+                float pickedMultiplierSumTotal = Random.value;
+                float pickedLengthAB = (pickedMultiplierSumTotal * Random.value);
+                float pickedLengthAC = (pickedMultiplierSumTotal - pickedLengthAB);
+
+                Vector2 pickedPoint = (polygonPoints[polygonTriangles[i * 3]] + (ab * pickedLengthAB + ac * pickedLengthAC));
+                GameObject.Instantiate(gameObject, new Vector3(pickedPoint.x, GetHeight(pickedPoint.x, pickedPoint.y), pickedPoint.y), Quaternion.identity, transform);
+                break;
+            }
         }
     }
 
@@ -91,7 +144,7 @@ public class Spawner : MonoBehaviour
         return Terrain.activeTerrain.terrainData.GetHeight(x, y);
     }
 
-    public static float GetHeight(int x, int y) {
+    public static float GetHeight(float x, float y) {
         if(Physics.Raycast(new Vector3(x, 0f, y), Vector3.down, out RaycastHit hit)) {
             return hit.point.y;
         }

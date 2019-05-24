@@ -18,7 +18,7 @@ public class SpawnerEditor : Editor
 
         if(GUILayout.Button("Spawn")) {
             SpawnManager.Instance.DeleteAllChilds(spawner.transform);
-            spawner.SpawnAll(spawner.prefabToSpawn, spawner.shapeCreator.shapes[0]);
+            spawner.SpawnAll(spawner.prefabToSpawn);
         }
         else if(GUILayout.Button("Clear")) {
             SpawnManager.Instance.DeleteAllChilds(spawner.transform);
