@@ -14,7 +14,7 @@ public class ShapeEditor : Editor {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        string helpMessage = "Left click to add points.\nShift-left click on point to delete.\nShift-left click on empty space to create new shape.";
+        string helpMessage = "Shift+Left click to add points to the existing selection.\nControl-left click on point to delete.\nControl-left click on empty space to create new shape.";
         EditorGUILayout.HelpBox(helpMessage, MessageType.Info);
 
         int shapeDeleteIndex = -1;
@@ -132,14 +132,14 @@ public class ShapeEditor : Editor {
         if(Physics.Raycast(mouseRay, out RaycastHit hit)) {
             Vector3 mousePosition = hit.point;
 
-            if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.Shift)
+            if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.Control)
             {
-                HandleShiftLeftMouseDown(mousePosition);
+                HandleControlMouseDown(mousePosition);
             }
 
-            if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.None)
+            if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && (guiEvent.modifiers == EventModifiers.None || guiEvent.modifiers == EventModifiers.Shift))
             {
-                HandleLeftMouseDown(mousePosition);
+                HandleLeftMouseDown(mousePosition, guiEvent.modifiers, hit);
             }
 
             if (guiEvent.type == EventType.MouseUp && guiEvent.button == 0)
@@ -147,7 +147,7 @@ public class ShapeEditor : Editor {
                 HandleLeftMouseUp(mousePosition);
             }
 
-            if (guiEvent.type == EventType.MouseDrag && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.None)
+            if (guiEvent.type == EventType.MouseDrag && guiEvent.button == 0)
             {
                 HandleLeftMouseDrag(mousePosition);
             }
@@ -159,7 +159,7 @@ public class ShapeEditor : Editor {
         }
 	}
 
-    void HandleShiftLeftMouseDown(Vector3 mousePosition)
+    void HandleControlMouseDown(Vector3 mousePosition)
     {
         if (selectionInfo.mouseIsOverPoint)
         {
@@ -173,7 +173,7 @@ public class ShapeEditor : Editor {
         }
     }
 
-    void HandleLeftMouseDown(Vector3 mousePosition)
+    void HandleLeftMouseDown(Vector3 mousePosition, EventModifiers eventModifiers, RaycastHit raycastHit)
     {
         if (shapeCreator.shapes.Count == 0)
         {
@@ -188,7 +188,12 @@ public class ShapeEditor : Editor {
         }
         else
         {
-            CreateNewPoint(mousePosition);
+            if(eventModifiers == EventModifiers.Shift) {
+                CreateNewPoint(mousePosition);
+            }
+            else if(raycastHit.transform) {
+                Selection.activeGameObject = raycastHit.transform.gameObject;
+            }
         }
     }
 

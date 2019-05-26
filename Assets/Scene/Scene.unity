@@ -146,11 +146,13 @@ MonoBehaviour:
   creature: {fileID: 0}
   shapes:
   - points:
-    - {x: 27.860407, y: 0.1281805, z: 30.974987}
+    - {x: 26.786627, y: 0.12818146, z: 31.98934}
     - {x: 21.28168, y: 0, z: 19.540333}
-    - {x: 36.82594, y: 0, z: 10.854749}
-    - {x: 51.847477, y: 0.25636482, z: 19.964783}
-    - {x: 40.855232, y: 0.9564705, z: 39.808132}
+    - {x: 40.64033, y: 0.036628723, z: 14.166691}
+    - {x: 50.944946, y: 0.28418732, z: 23.48249}
+    - {x: 38.824024, y: 0.803318, z: 39.150448}
+  - points:
+    - {x: 60.115253, y: 0.5006561, z: 23.002365}
   showShapesList: 1
   handleRadius: 0.5
 --- !u!4 &344253690
@@ -183,6 +185,8 @@ MonoBehaviour:
   prefabToSpawn: {fileID: 6978519100461874365, guid: b47ef21dd8cf6ab458e23d91ff90489c,
     type: 3}
   creature: {fileID: 11400000, guid: 6d5e3debb6c9afd4593931caf24fec31, type: 2}
+  polygonPoints: []
+  polygonTriangles: 
   creatureAmountToSpawn: 100
 --- !u!1 &429069271
 GameObject:
