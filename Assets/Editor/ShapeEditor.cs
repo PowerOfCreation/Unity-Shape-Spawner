@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEditor;
 using Sebastian.Geometry;
 
-[CustomEditor(typeof(ShapeCreator))]
+[CustomEditor(typeof(CreatureSpawnzones))]
 public class ShapeEditor : Editor {
 
-    ShapeCreator shapeCreator;
+    CreatureSpawnzones shapeCreator;
     SelectionInfo selectionInfo;
     bool shapeChangedSinceLastRepaint;
 
@@ -327,7 +327,7 @@ public class ShapeEditor : Editor {
     void OnEnable()
     {
         shapeChangedSinceLastRepaint = true;
-        shapeCreator = target as ShapeCreator;
+        shapeCreator = target as CreatureSpawnzones;
         selectionInfo = new SelectionInfo();
         Undo.undoRedoPerformed += OnUndoOrRedo;
         Tools.hidden = true;
