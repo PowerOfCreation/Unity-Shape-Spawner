@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Sebastian.Geometry
 {
-	/*
+    /*
      * Handles triangulation of given polygon using the 'ear-clipping' algorithm.
      * The implementation is based on the following paper:
      * https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
      */
 
-	public class Triangulator
+    public class Triangulator
     {
         LinkedList<Vertex> vertsInClippedPolygon;
         int[] tris;
@@ -63,7 +63,6 @@ namespace Sebastian.Geometry
                         }
                     }
 
-
                     vertexNode = nextVertexNode;
                 }
 
@@ -91,7 +90,7 @@ namespace Sebastian.Geometry
                 bool vertexIsConvex = IsConvex(polygon.points[prevPointIndex], polygon.points[i], polygon.points[nextPointIndex]);
                 Vertex currentHullVertex = new Vertex(polygon.points[i], i, vertexIsConvex);
 
-                currentNode = (currentNode == null)?vertexList.AddFirst(currentHullVertex):vertexList.AddAfter(currentNode, currentHullVertex);
+                currentNode = (currentNode == null) ? vertexList.AddFirst(currentHullVertex) : vertexList.AddAfter(currentNode, currentHullVertex);
             }
 
             // Process holes:
@@ -153,10 +152,10 @@ namespace Sebastian.Geometry
                                 // duplicate edges occur where a hole has been joined to the outer polygon
                                 bool isDuplicateEdge = Mathf.Approximately(rayIntersectX, rayIntersectPoint.x);
 
-								// connect to duplicate edge (the one that leads away from the other, already connected hole, and back to the original hull) if the
-								// current hole's bridge point is higher up than the bridge point of the other hole (so that the new bridge connection doesn't intersect).
-								bool connectToThisDuplicateEdge = holeData.bridgePoint.y > potentialNewBridgeNode.Previous.Value.position.y;
-  
+                                // connect to duplicate edge (the one that leads away from the other, already connected hole, and back to the original hull) if the
+                                // current hole's bridge point is higher up than the bridge point of the other hole (so that the new bridge connection doesn't intersect).
+                                bool connectToThisDuplicateEdge = holeData.bridgePoint.y > potentialNewBridgeNode.Previous.Value.position.y;
+
                                 if (!isDuplicateEdge || connectToThisDuplicateEdge)
                                 {
                                     // if this is the closest ray intersection thus far, set bridge hull node to point in line having greater x pos (since def to right of hole).
@@ -243,7 +242,6 @@ namespace Sebastian.Geometry
             return vertexList;
         }
 
-
         // check if triangle contains any verts (note, only necessary to check reflex verts).
         bool TriangleContainsVertex(Vertex v0, Vertex v1, Vertex v2)
         {
@@ -266,7 +264,6 @@ namespace Sebastian.Geometry
 
             return false;
         }
-
 
         // v1 is considered a convex vertex if v0-v1-v2 are wound in a counter-clockwise order.
         bool IsConvex(Vector2 v0, Vector2 v1, Vector2 v2)

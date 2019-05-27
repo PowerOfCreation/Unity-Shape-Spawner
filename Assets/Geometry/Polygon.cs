@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 /*
  * Processes given arrays of hull and hole points into single array, enforcing correct -wiseness.
@@ -40,7 +40,6 @@ namespace Sebastian.Geometry
             numPoints = numHullPoints + numHolePointsSum;
             points = new Vector2[numPoints];
 
-
             // add hull points, ensuring they wind in counterclockwise order
             bool reverseHullPointsOrder = !PointsAreCounterClockwise(hull);
             for (int i = 0; i < numHullPoints; i++)
@@ -61,8 +60,7 @@ namespace Sebastian.Geometry
         }
 
         public Polygon(Vector2[] hull) : this(hull, new Vector2[0][])
-        {
-        }
+        { }
 
         bool PointsAreCounterClockwise(Vector2[] testPoints)
         {

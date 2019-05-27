@@ -1,7 +1,7 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 /*
  * Processes array of shapes into a single mesh
@@ -31,8 +31,8 @@ namespace Sebastian.Geometry
             return new Mesh()
             {
                 vertices = vertices,
-                triangles = triangles,
-                normals = vertices.Select(x => Vector3.up).ToArray()
+                    triangles = triangles,
+                    normals = vertices.Select(x => Vector3.up).ToArray()
             };
         }
 
@@ -74,7 +74,7 @@ namespace Sebastian.Geometry
             }
             // Create polygons from the solid shapes and their associated hole shapes
             Polygon[] polygons = solidShapes.Select(x => new Polygon(x.polygon.points, x.holes.Select(h => h.polygon.points).ToArray())).ToArray();
-  
+
             // Flatten the points arrays from all polygons into a single array, and convert the vector2s to vector3s.
             vertices = polygons.SelectMany(x => x.points.Select(v2 => new Vector3(v2.x, height, v2.y))).ToArray();
 

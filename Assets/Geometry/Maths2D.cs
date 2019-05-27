@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,12 +14,12 @@ namespace Sebastian.Geometry
 
         public static int SideOfLine(Vector2 a, Vector2 b, Vector2 c)
         {
-            return (int)Mathf.Sign((c.x - a.x) * (-b.y + a.y) + (c.y - a.y) * (b.x - a.x));
+            return (int) Mathf.Sign((c.x - a.x) * (-b.y + a.y) + (c.y - a.y) * (b.x - a.x));
         }
 
         public static int SideOfLine(float ax, float ay, float bx, float by, float cx, float cy)
         {
-            return (int)Mathf.Sign((cx - ax) * (-by + ay) + (cy - ay) * (bx - ax));
+            return (int) Mathf.Sign((cx - ax) * (-by + ay) + (cy - ay) * (bx - ax));
         }
 
         public static bool PointInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 p)

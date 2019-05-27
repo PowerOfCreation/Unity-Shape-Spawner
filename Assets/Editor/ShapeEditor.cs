@@ -1,11 +1,12 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using Sebastian.Geometry;
+using UnityEditor;
+using UnityEngine;
 
 [CustomEditor(typeof(CreatureSpawnzones))]
-public class ShapeEditor : Editor {
+public class ShapeEditor : Editor
+{
 
     CreatureSpawnzones shapeCreator;
     SelectionInfo selectionInfo;
@@ -70,10 +71,10 @@ public class ShapeEditor : Editor {
         else
         {
             HandleInput(guiEvent);
-			if (shapeChangedSinceLastRepaint)
-			{
-				HandleUtility.Repaint();
-			}
+            if (shapeChangedSinceLastRepaint)
+            {
+                HandleUtility.Repaint();
+            }
         }
     }
 
@@ -88,9 +89,9 @@ public class ShapeEditor : Editor {
     {
         bool mouseIsOverSelectedShape = selectionInfo.mouseOverShapeIndex == selectionInfo.selectedShapeIndex;
         int newPointIndex = (selectionInfo.mouseIsOverLine && mouseIsOverSelectedShape) ? selectionInfo.lineIndex + 1 : SelectedShape.points.Count;
-		Undo.RecordObject(shapeCreator, "Add point");
+        Undo.RecordObject(shapeCreator, "Add point");
         SelectedShape.points.Insert(newPointIndex, position);
-		selectionInfo.pointIndex = newPointIndex;
+        selectionInfo.pointIndex = newPointIndex;
         selectionInfo.mouseOverShapeIndex = selectionInfo.selectedShapeIndex;
         shapeChangedSinceLastRepaint = true;
 
@@ -128,8 +129,9 @@ public class ShapeEditor : Editor {
 
     void HandleInput(Event guiEvent)
     {
-		Ray mouseRay = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition);
-        if(Physics.Raycast(mouseRay, out RaycastHit hit)) {
+        Ray mouseRay = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition);
+        if (Physics.Raycast(mouseRay, out RaycastHit hit))
+        {
             Vector3 mousePosition = hit.point;
 
             if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.modifiers == EventModifiers.Control)
@@ -157,7 +159,7 @@ public class ShapeEditor : Editor {
                 UpdateMouseOverInfo(mousePosition);
             }
         }
-	}
+    }
 
     void HandleControlMouseDown(Vector3 mousePosition)
     {
@@ -188,17 +190,19 @@ public class ShapeEditor : Editor {
         }
         else
         {
-            if(eventModifiers == EventModifiers.Shift) {
+            if (eventModifiers == EventModifiers.Shift)
+            {
                 CreateNewPoint(mousePosition);
             }
-            else if(raycastHit.transform) {
+            else if (raycastHit.transform)
+            {
                 Selection.activeGameObject = raycastHit.transform.gameObject;
             }
         }
     }
 
-	void HandleLeftMouseUp(Vector3 mousePosition)
-	{
+    void HandleLeftMouseUp(Vector3 mousePosition)
+    {
         if (selectionInfo.pointIsSelected)
         {
             SelectedShape.points[selectionInfo.pointIndex] = selectionInfo.positionAtStartOfDrag;
@@ -210,17 +214,17 @@ public class ShapeEditor : Editor {
             shapeChangedSinceLastRepaint = true;
         }
 
-	}
+    }
 
-	void HandleLeftMouseDrag(Vector3 mousePosition)
-	{
+    void HandleLeftMouseDrag(Vector3 mousePosition)
+    {
         if (selectionInfo.pointIsSelected)
         {
             SelectedShape.points[selectionInfo.pointIndex] = mousePosition;
             shapeChangedSinceLastRepaint = true;
         }
 
-	}
+    }
 
     void UpdateMouseOverInfo(Vector3 mousePosition)
     {
@@ -305,7 +309,7 @@ public class ShapeEditor : Editor {
                 }
                 else
                 {
-                    Handles.color = (shapeIsSelected)?Color.black:deselectedShapeColour;
+                    Handles.color = (shapeIsSelected) ? Color.black : deselectedShapeColour;
                     Handles.DrawDottedLine(shapeToDraw.points[i], nextPoint, 4);
                 }
 
@@ -315,7 +319,7 @@ public class ShapeEditor : Editor {
                 }
                 else
                 {
-                    Handles.color = (shapeIsSelected)?Color.white:deselectedShapeColour;
+                    Handles.color = (shapeIsSelected) ? Color.white : deselectedShapeColour;
                 }
                 Handles.DrawSolidDisc(shapeToDraw.points[i], Vector3.up, shapeCreator.handleRadius);
             }
@@ -335,7 +339,7 @@ public class ShapeEditor : Editor {
 
     void OnDisable()
     {
-		Undo.undoRedoPerformed -= OnUndoOrRedo;
+        Undo.undoRedoPerformed -= OnUndoOrRedo;
         Tools.hidden = false;
     }
 
