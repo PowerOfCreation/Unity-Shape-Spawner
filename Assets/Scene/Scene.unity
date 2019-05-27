@@ -122,7 +122,6 @@ GameObject:
   m_Component:
   - component: {fileID: 344253690}
   - component: {fileID: 344253689}
-  - component: {fileID: 344253691}
   m_Layer: 0
   m_Name: Shape Creator
   m_TagString: Untagged
@@ -142,8 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89d046e88a8b34ee18554f8958ee7c15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshFilter: {fileID: 429069273}
-  creature: {fileID: 0}
+  creature: {fileID: 11400000, guid: 6d5e3debb6c9afd4593931caf24fec31, type: 2}
   shapes:
   - points:
     - {x: 26.786627, y: 0.12818146, z: 31.98934}
@@ -153,6 +151,10 @@ MonoBehaviour:
     - {x: 38.824024, y: 0.803318, z: 39.150448}
   showShapesList: 1
   handleRadius: 0.5
+  polygonPoints: []
+  polygonTriangles: 
+  areas: []
+  totalArea: 0
 --- !u!4 &344253690
 Transform:
   m_ObjectHideFlags: 0
@@ -167,25 +169,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &344253691
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 344253688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd3a207ff019e3e4887a4e183b91327b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shapeCreator: {fileID: 344253689}
-  prefabToSpawn: {fileID: 6978519100461874365, guid: b47ef21dd8cf6ab458e23d91ff90489c,
-    type: 3}
-  creature: {fileID: 11400000, guid: 6d5e3debb6c9afd4593931caf24fec31, type: 2}
-  polygonPoints: []
-  polygonTriangles: 
-  creatureAmountToSpawn: 100
 --- !u!1 &429069271
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,7 +614,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22fe11432054a8b4dbc6a45579e0b54b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  creatureSpawnZones: []
+  dummyCreature: {fileID: 11400000, guid: 6d5e3debb6c9afd4593931caf24fec31, type: 2}
+  creatureSpawnzones: []
   minDistanceBetweenEntities: 10
 --- !u!4 &1044101503
 Transform:

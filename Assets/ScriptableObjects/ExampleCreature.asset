@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2757250c2b11c7849ab9434d8ad5cf29, type: 3}
-  m_Name: Horse
+  m_Name: ExampleCreature
   m_EditorClassIdentifier: 
   creatureName: 
   prefab: {fileID: 6978519100461874365, guid: b47ef21dd8cf6ab458e23d91ff90489c, type: 3}
