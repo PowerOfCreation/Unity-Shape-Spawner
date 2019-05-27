@@ -9,7 +9,7 @@ public class SpawnManager : Singleton<SpawnManager>
     
     public float minDistanceBetweenEntities = 10f;
 
-    public void Spawn(Creature creature)
+    /*/public void Spawn(Creature creature)
     {
         Vector3 bestSpawnPosition = SpawnManager.Instance.GetBestSpawnPosition(creature);
         Entity entity = GameObject.Instantiate(creature.prefab, new Vector3(bestSpawnPosition.x, Spawner.GetHeight((int) bestSpawnPosition.x, (int) bestSpawnPosition.z), bestSpawnPosition.z), Quaternion.identity, transform).GetComponent<Entity>();
@@ -21,7 +21,7 @@ public class SpawnManager : Singleton<SpawnManager>
         else {
             allSpawnedEntities.Add(creature, new List<Entity>() {entity});
         }
-    }
+    }*/
 
     public void RegisterSpawnZone(Creature creature, Shape shape) {
         for(int i = 0; i < creatureSpawnZones.Count; i++) {
@@ -34,7 +34,7 @@ public class SpawnManager : Singleton<SpawnManager>
         creatureSpawnZones.Add(new CreatureSpawnZones(creature, shape));
     }
 
-    public Vector3 GetBestSpawnPosition(Creature creature) {
+    /*/public Vector3 GetBestSpawnPosition(Creature creature) {
         List<Entity> entities = (allSpawnedEntities.ContainsKey(creature))?allSpawnedEntities[creature]:new List<Entity>();
         List<Vector3> bestSpawnPositions = new List<Vector3>();
         float bestSpawnMetric = float.MinValue;
@@ -66,7 +66,7 @@ public class SpawnManager : Singleton<SpawnManager>
         }
 
         return bestSpawnPositions[Random.Range(0, bestSpawnPositions.Count)];
-    }
+    }*/
 
     public float CalculateSpawnMetric(Vector3 point, List<Entity> entities) {
         float spawnMetric = 0f;

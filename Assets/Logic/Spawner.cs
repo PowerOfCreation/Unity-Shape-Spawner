@@ -7,41 +7,46 @@ using System.Linq;
 public class Spawner : MonoBehaviour
 {
     public ShapeCreator shapeCreator;
-    public GameObject prefabToSpawn;
     public Creature creature;
 
     public List<Vector2> polygonPoints;
     public List<int> polygonTriangles;
     float[] areas;
     float totalArea = 0f;
+
     [Range(0, 200)]
     public short creatureAmountToSpawn = 10;
 
+    /// <summary>
+    /// Will spawn creatures on pressing Space.
+    /// </summary>
     public void Update() {
         if(Input.GetButtonDown("Jump")) {
-          //  StartCoroutine(SpawnCreature(creatureAmountToSpawn));
-          SpawnCreature(creatureAmountToSpawn);
+            SpawnManager.Instance.DeleteAllChilds(transform);
+            SpawnCreature(creature, creatureAmountToSpawn);
         }
     }
 
     public void Start() {
-        FillTrianglesField(shapeCreator.shapes);
-        FillAreaField();
+        (polygonPoints, polygonTriangles) = GetTriangles(shapeCreator.shapes);
+        (totalArea, areas) = GetAreas(polygonTriangles, polygonPoints);
     }
 
-    public void SpawnCreature(int amount) {
+    /// <summary>
+    /// Will delete a previously spawned creatures before calling SpawnCreature(amount).
+    /// </summary>
+    /// <param name="amount"></param>
+    public void RespawnCreature(int amount) {
         SpawnManager.Instance.DeleteAllChilds(transform);
-        var watch = System.Diagnostics.Stopwatch.StartNew();
-
-        for(int i = 0; i < amount; i++) {
-           SpawnAll(creature.prefab);
-        }
-        watch.Stop();
-        var elapsedMs = watch.ElapsedMilliseconds;
-        Debug.Log(elapsedMs);
+        SpawnCreature(creature, amount);
     }
 
-    public void FillTrianglesField(List<Shape> shapes) {
+    /// <summary>
+    /// Get all Triangles formed by the shapes.
+    /// </summary>
+    /// <param name="shapes"></param>
+    /// <returns>A list of points forming triangles and how the the points are connected(three entries in the second list form one triangle together).</returns>
+    public (List<Vector2>, List<int>) GetTriangles(List<Shape> shapes) {
         Vector2[][] holes = new Vector2[0][];
         for(int i = 0; i < shapes.Count; i++) {
             int oldPolygonPointsCount = polygonPoints.Count;
@@ -51,14 +56,22 @@ public class Spawner : MonoBehaviour
             for(int j = 0; j < currentTriangles.Count; j++) {
                 currentTriangles[j] += oldPolygonPointsCount;
             }
-            polygonTriangles.AddRange(currentTriangles);
             polygonPoints.AddRange(currentPolygonPoints);
+            polygonTriangles.AddRange(currentTriangles);
         }
 
-        areas = new float[polygonTriangles.Count / 3];
+        return (polygonPoints, polygonTriangles);
     }
+    /// <summary>
+    /// Calculates the areas 
+    /// </summary>
+    /// <param name="polygonTriangles"></param>
+    /// <param name="polygonPoints"></param>
+    /// <returns>Returns the total area and an array holding the area for each triangle.</returns>
+    public (float, float[] areas) GetAreas(List<int> polygonTriangles, List<Vector2> polygonPoints) {
+        float totalArea = 0;
+        float[] areas = new float[polygonTriangles.Count / 3];
 
-    public void FillAreaField() {
         for(int i = 0, k = 0; i < polygonTriangles.Count; i += 3, k++) {
             float a = Vector2.Distance(polygonPoints[polygonTriangles[i]], polygonPoints[polygonTriangles[i + 1]]);
             float b = Vector2.Distance(polygonPoints[polygonTriangles[i]], polygonPoints[polygonTriangles[i + 2]]);
@@ -68,76 +81,32 @@ public class Spawner : MonoBehaviour
             areas[k] = Mathf.Sqrt(s * (s - a) * (s - b) * (s - c));
             totalArea += areas[k];
         }
+
+        return (totalArea, areas);
     }
 
-    public void SpawnAll(GameObject gameObject)
+    public void SpawnCreature(Creature creature, int amount = 1)
     {
-        float pickedArea = (Random.value * totalArea);
-        float currentArea = 0f;
+        for(int i = 0; i < amount; i++) {
+            float pickedArea = (Random.value * totalArea);
+            float currentArea = 0f;
 
-        for(int i = 0; i < areas.Length; i++) {
-            currentArea += areas[i];
-            if(currentArea >= pickedArea) {
-                Vector2 ab = polygonPoints[polygonTriangles[(i * 3) + 1]] - polygonPoints[polygonTriangles[i * 3]];
-                Vector2 ac = polygonPoints[polygonTriangles[(i * 3) + 2]] - polygonPoints[polygonTriangles[i * 3]];
+            for(int j = 0; j < areas.Length; j++) {
+                currentArea += areas[j];
+                if(currentArea >= pickedArea) {
+                    Vector2 ab = polygonPoints[polygonTriangles[(j * 3) + 1]] - polygonPoints[polygonTriangles[j * 3]];
+                    Vector2 ac = polygonPoints[polygonTriangles[(j * 3) + 2]] - polygonPoints[polygonTriangles[j * 3]];
 
-                float pickedMultiplierSumTotal = Random.value;
-                float pickedLengthAB = (pickedMultiplierSumTotal * Random.value);
-                float pickedLengthAC = (pickedMultiplierSumTotal - pickedLengthAB);
+                    float pickedMultiplierSumTotal = Random.value;
+                    float pickedLengthAB = (pickedMultiplierSumTotal * Random.value);
+                    float pickedLengthAC = (pickedMultiplierSumTotal - pickedLengthAB);
 
-                Vector2 pickedPoint = (polygonPoints[polygonTriangles[i * 3]] + (ab * pickedLengthAB + ac * pickedLengthAC));
-                GameObject.Instantiate(gameObject, new Vector3(pickedPoint.x, GetHeight(pickedPoint.x, pickedPoint.y), pickedPoint.y), Quaternion.identity, transform);
-                break;
-            }
-        }
-    }
-
-    public static List<Vector3> GetPossibleSpawnPoints(Shape shape) {
-        float minX = shape.points[0].x, maxX = shape.points[0].x;
-        float minY = shape.points[0].z, maxY = shape.points[0].z;
-
-        for(int i = 1; i < shape.points.Count; i++)
-        {
-            Vector3 point = shape.points[i];
-
-            if(point.x < minX)
-            {
-                minX = point.x;
-            }
-            else if(point.x > maxX)
-            {
-                maxX = point.x;
-            }
-            if(point.z < minY)
-            {
-                minY = point.z;
-            }
-            else if(point.z > maxY)
-            {
-                maxY = point.z;
-            }
-
-        }
-
-        List<Vector3> result = new List<Vector3>((((int) maxX - Mathf.CeilToInt(minX)) / 2) * (((int) maxY - Mathf.CeilToInt(minY)) / 2));
-
-        for(int x = Mathf.CeilToInt(minX); x < maxX; x += 2)
-        {
-            for(int y = Mathf.CeilToInt(minY); y < maxY; y += 2)
-            {
-                Vector3 currentPosition = new Vector3(x, GetHeightRough(x, y), y);
-
-                if(IsInPolygon(shape.points, currentPosition))
-                {
-                    result.Add(currentPosition);
-                }
-                else {
-                    y += 10;
+                    Vector2 pickedPoint = (polygonPoints[polygonTriangles[j * 3]] + (ab * pickedLengthAB + ac * pickedLengthAC));
+                    GameObject.Instantiate(creature.prefab, new Vector3(pickedPoint.x, GetHeight(pickedPoint.x, pickedPoint.y), pickedPoint.y), Quaternion.identity, transform);
+                    break;
                 }
             }
         }
-
-        return result;
     }
 
     public static float GetHeightRough(int x, int y) {
@@ -156,24 +125,5 @@ public class Spawner : MonoBehaviour
         Physics.queriesHitBackfaces = false;
 
         return .5f;
-    }
-
-    public static bool IsInPolygon(List<Vector3> polygon, Vector3 testPoint)
-    {
-        bool result = false;
-        int j = polygon.Count - 1;
-        for (int i = 0; i < polygon.Count; i++)
-        {
-            if (polygon[i].z < testPoint.z && polygon[j].z >= testPoint.z || polygon[j].z < testPoint.z && polygon[i].z >= testPoint.z)
-            {
-                if (polygon[i].x + (testPoint.z - polygon[i].z) / (polygon[j].z - polygon[i].z) * (polygon[j].x - polygon[i].x) < testPoint.x)
-                {
-                    result = !result;
-                }
-            }
-            j = i;
-        }
-
-        return result;
     }
 }
